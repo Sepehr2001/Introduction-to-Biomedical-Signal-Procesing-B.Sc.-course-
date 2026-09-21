@@ -1,0 +1,270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Main</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-09-21">
+<meta name="DC.source" content="Main.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#2">Part A</a>
+</li>
+<li>
+<a href="#3">Part B</a>
+</li>
+<li>
+<a href="#4">Part C</a>
+</li>
+<li>
+<a href="#5">Part D</a>
+</li>
+<li>
+<a href="#6">Part E</a>
+</li>
+</ul>
+</div>
+<pre class="codeinput">clc
+close <span class="string">all</span>
+clear
+
+<span class="comment">% cell2mat(struct2cell(YourStructure))</span>
+
+EMG1 = cell2mat(struct2cell(load(<span class="string">'EMG1.mat'</span>)))*10000;
+EMG2 = cell2mat(struct2cell(load(<span class="string">'EMG2.mat'</span>)))*10000;
+EMG3 = cell2mat(struct2cell(load(<span class="string">'EMG3.mat'</span>)))*10000;
+EMG4 = cell2mat(struct2cell(load(<span class="string">'EMG4.mat'</span>)))*10000;
+
+Fs = 2000;
+</pre>
+<h2 id="2">Part A</h2>
+<pre class="codeinput">clc
+close <span class="string">all</span>
+[t1,m_av1] = moving_average(EMG1, Fs, 100, 500);
+[t2,m_av2] = moving_average(EMG2, Fs, 100, 500);
+[t3,m_av3] = moving_average(EMG3, Fs, 100, 500);
+
+figure(Name=<span class="string">'Moving average and Rectified EMGs'</span>)
+subplot(331),       plot(t1, EMG1),          title(<span class="string">'EMG1'</span>)
+subplot(332),       plot(t2, EMG2),         title(<span class="string">'EMG2'</span>)
+subplot(333),       plot(t3, EMG3),         title(<span class="string">'EMG2'</span>)
+
+subplot(334),       plot(t1, EMG1.^2),         title(<span class="string">'rectified EMG1: EMG1 ^ 2'</span>)
+subplot(335),       plot(t2, EMG2.^2),         title(<span class="string">'rectified EMG2: EMG2 ^ 2'</span>)
+subplot(336),       plot(t3, EMG3.^2),         title(<span class="string">'rectified EMG3: EMG3 ^ 2'</span>)
+
+subplot(337),       plot(t1, m_av1),         title(<span class="string">'Window Integrated EMG1'</span>),       xlabel(<span class="string">'time(seconds)'</span>)
+subplot(338),       plot(t2, m_av2),         title(<span class="string">'Window Integrated EMG2'</span>),       xlabel(<span class="string">'time(seconds)'</span>)
+subplot(339),       plot(t3, m_av3),         title(<span class="string">'Window Integrated EMG3'</span>),       xlabel(<span class="string">'time(seconds)'</span>)
+</pre>
+<img vspace="5" hspace="5" src="Main_01.png" alt=""> <h2 id="3">Part B</h2>
+<pre class="codeinput">clc
+figure(Name=<span class="string">'Windows in Time domain'</span>)
+<span class="keyword">for</span> i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    t = linspace((i-1)*5, (i-1)*5 + 0.5, length(window));
+    subplot(2,4,i),     plot(t,window),      title([<span class="string">'window number = '</span>,num2str(i)])
+<span class="keyword">end</span>
+</pre>
+<img vspace="5" hspace="5" src="Main_02.png" alt=""> <h2 id="4">Part C</h2>
+<pre class="codeinput">clc
+figure(Name=<span class="string">'FFT of windows'</span>)
+<span class="keyword">for</span> i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    [f, x] = my_fft(window, Fs);
+    subplot(2,4,i),     plot(f,x),      title([<span class="string">'fft of window number = '</span>,num2str(i)])
+<span class="keyword">end</span>
+
+figure(Name=<span class="string">'PSD of windows'</span>)
+h=spectrum.welch;
+<span class="keyword">for</span> i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    subplot(2,4,i),     psd(h,window, <span class="string">'fs'</span>, Fs),      title([<span class="string">'psd of window number = '</span>,num2str(i)])
+<span class="keyword">end</span>
+</pre>
+<img vspace="5" hspace="5" src="Main_03.png" alt=""> <img vspace="5" hspace="5" src="Main_04.png" alt=""> <h2 id="5">Part D</h2>
+<pre class="codeinput">clc
+figure(Name=<span class="string">'Median frequencies of windows'</span>)
+med_freq = zeros(1,7);
+<span class="keyword">for</span> i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    med_freq(i) = medfreq(window,Fs);
+<span class="keyword">end</span>
+
+plot(1:7,med_freq),     xlabel(<span class="string">'Window number'</span>),        ylabel(<span class="string">'Median frequency'</span>),     title(<span class="string">'Median frequencies of windows'</span>)
+</pre>
+<img vspace="5" hspace="5" src="Main_05.png" alt=""> <h2 id="6">Part E</h2>
+<pre class="codeinput">clc
+figure(Name=<span class="string">'Number of zero crossings of windows'</span>)
+zero_crossings = zeros(1,7);
+<span class="keyword">for</span> i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    [~,zero_crossings(i)] = zerocrossrate(window);
+<span class="keyword">end</span>
+
+plot(1:7,zero_crossings),      xlabel(<span class="string">'Window number'</span>),        ylabel(<span class="string">'count of zero crossings'</span>),      title(<span class="string">'Number of zero crossings of windows'</span>)
+</pre>
+<img vspace="5" hspace="5" src="Main_06.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+clc
+close all
+clear
+
+% cell2mat(struct2cell(YourStructure))
+
+EMG1 = cell2mat(struct2cell(load('EMG1.mat')))*10000;   
+EMG2 = cell2mat(struct2cell(load('EMG2.mat')))*10000;  
+EMG3 = cell2mat(struct2cell(load('EMG3.mat')))*10000;  
+EMG4 = cell2mat(struct2cell(load('EMG4.mat')))*10000;   
+
+Fs = 2000;
+
+%% Part A
+clc
+close all
+[t1,m_av1] = moving_average(EMG1, Fs, 100, 500);
+[t2,m_av2] = moving_average(EMG2, Fs, 100, 500);
+[t3,m_av3] = moving_average(EMG3, Fs, 100, 500);
+
+figure(Name='Moving average and Rectified EMGs')
+subplot(331),       plot(t1, EMG1),          title('EMG1')
+subplot(332),       plot(t2, EMG2),         title('EMG2')
+subplot(333),       plot(t3, EMG3),         title('EMG2')
+
+subplot(334),       plot(t1, EMG1.^2),         title('rectified EMG1: EMG1 ^ 2')
+subplot(335),       plot(t2, EMG2.^2),         title('rectified EMG2: EMG2 ^ 2')
+subplot(336),       plot(t3, EMG3.^2),         title('rectified EMG3: EMG3 ^ 2')
+
+subplot(337),       plot(t1, m_av1),         title('Window Integrated EMG1'),       xlabel('time(seconds)')
+subplot(338),       plot(t2, m_av2),         title('Window Integrated EMG2'),       xlabel('time(seconds)')
+subplot(339),       plot(t3, m_av3),         title('Window Integrated EMG3'),       xlabel('time(seconds)')
+
+%% Part B
+clc
+figure(Name='Windows in Time domain')
+for i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    t = linspace((i-1)*5, (i-1)*5 + 0.5, length(window));
+    subplot(2,4,i),     plot(t,window),      title(['window number = ',num2str(i)])
+end
+
+%% Part C
+clc
+figure(Name='FFT of windows')
+for i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    [f, x] = my_fft(window, Fs);
+    subplot(2,4,i),     plot(f,x),      title(['fft of window number = ',num2str(i)])
+end
+
+figure(Name='PSD of windows')
+h=spectrum.welch;    
+for i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    subplot(2,4,i),     psd(h,window, 'fs', Fs),      title(['psd of window number = ',num2str(i)])
+end
+
+%% Part D
+clc
+figure(Name='Median frequencies of windows')
+med_freq = zeros(1,7);
+for i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    med_freq(i) = medfreq(window,Fs);
+end
+
+plot(1:7,med_freq),     xlabel('Window number'),        ylabel('Median frequency'),     title('Median frequencies of windows')
+
+%% Part E
+clc
+figure(Name='Number of zero crossings of windows')
+zero_crossings = zeros(1,7);
+for i =1:7
+    window = EMG4((i-1)*5*Fs + 1 : (i-1)*Fs*5 + 0.5*Fs);
+    [~,zero_crossings(i)] = zerocrossrate(window); 
+end
+
+plot(1:7,zero_crossings),      xlabel('Window number'),        ylabel('count of zero crossings'),      title('Number of zero crossings of windows')
+
+##### SOURCE END #####
+-->
+</body>
+</html>
