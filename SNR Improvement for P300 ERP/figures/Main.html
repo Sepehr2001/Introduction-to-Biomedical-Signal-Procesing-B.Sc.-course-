@@ -1,0 +1,643 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Main</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-09-21">
+<meta name="DC.source" content="Main.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">Section1: Part A &amp; B (without any filtering)</a>
+</li>
+<li>
+<a href="#2">Section2: Comparing different filters with each other</a>
+</li>
+<li>
+<a href="#3">Section3: Picking the best Filter</a>
+</li>
+<li>
+<a href="#4">Section4: Comparing IIR_Butterworth_Filter with Ideal 1to20 Hz filter!</a>
+</li>
+</ul>
+</div>
+<h2 id="1">Section1: Part A &amp; B (without any filtering)</h2>
+<pre class="codeinput">clc
+clear
+close <span class="string">all</span>
+
+data = load (<span class="string">'ex2data.mat'</span>);
+eeg = transpose(data.eeg);
+indd = transpose(data.indd);
+indf = transpose(data.indf);
+
+Fs = 250;
+
+<span class="comment">% number of regular stimuli = 420             &amp;             number of irregular stimuli = 74</span>
+
+<span class="comment">% Part A</span>
+
+sweeps_interval1 = [-50 500];  <span class="comment">%in milli seconds</span>
+[t, Mean_irreg] = Sync_mean(eeg, indd,sweeps_interval1 , Fs);
+figure(Name=<span class="string">'Averaged irregular response'</span>)
+plot(t,Mean_irreg),        title(<span class="string">'Averaged irregular response, number of sweeps:'</span>, num2str(length(indd)),<span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'time (milli seconds)'</span>);
+
+[t, Mean_reg] = Sync_mean(eeg, indf,sweeps_interval1 , Fs);
+figure(Name=<span class="string">'Averaged regular response'</span>)
+plot(t,Mean_reg),          title(<span class="string">'Averaged regular response, number of sweeps:'</span>, num2str(length(indf)),<span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'time (milli seconds)'</span>);
+
+<span class="comment">% Part B.1</span>
+
+[t1, Mean_reg_even] = Sync_mean(eeg, indf,sweeps_interval1 , Fs, 2);
+[t2, Mean_reg_odd] = Sync_mean(eeg, indf,sweeps_interval1 , Fs, 1);
+
+figure(Name=<span class="string">'Average of even and odd sweeps of regular response'</span>)
+subplot(311),   plot(t1, Mean_reg_even),        title(<span class="string">'Averaged even regular response'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'time (milli seconds)'</span>);
+subplot(312),   plot(t2, Mean_reg_odd),          title(<span class="string">'Averaged odd regular response'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'time (milli seconds)'</span>);
+subplot(313),   plot(t, Mean_reg_even-Mean_reg_odd),          title(<span class="string">'Diff of odd and even'</span> ,<span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'time (milli seconds)'</span>);
+
+<span class="comment">% Part B.2</span>
+
+sweeps_interval2 = [-15 200];  <span class="comment">% in milli seconds</span>
+n_of_sweeps = [10 50 100 200 300 400 length(indf)];
+snr_estimate = SNR_estimate(eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+figure(Name=<span class="string">'SNR estimation with different numbers of sweeps'</span>)
+plot(n_of_sweeps, snr_estimate,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),        title(<span class="string">'SNR estimation'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'number of sweeps'</span>),    ylabel(<span class="string">'Estimated SNR'</span>), grid <span class="string">on</span>
+</pre>
+<img vspace="5" hspace="5" src="Main_01.png" alt=""> <img vspace="5" hspace="5" src="Main_02.png" alt=""> <img vspace="5" hspace="5" src="Main_03.png" alt=""> <img vspace="5" hspace="5" src="Main_04.png" alt=""> <h2 id="2">Section2: Comparing different filters with each other</h2>
+<pre class="codeinput">close <span class="string">all</span>
+clear
+clc
+data = load (<span class="string">'ex2data.mat'</span>);
+eeg = transpose(data.eeg);
+indd = transpose(data.indd);
+indf = transpose(data.indf);
+Fs = 250;
+sweeps_interval = [-50 500];  <span class="comment">%in milli seconds</span>
+
+[~, Mean_irreg] = Sync_mean(eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg]   = Sync_mean(eeg, indf,sweeps_interval , Fs);
+
+<span class="comment">% f1: FIR_Equiripple_Filter:</span>
+
+FIR_eq = FIR_Equiripple_Filter;
+f1_eeg = fliplr(filter(FIR_eq.Numerator,1,fliplr(filter(FIR_eq.Numerator ,1,eeg))));
+f1_filt_eeg = filtfilt(FIR_eq.Numerator ,1,eeg);
+[~, Mean_irreg_f1] = Sync_mean(f1_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f1]   = Sync_mean(f1_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f1_filt] = Sync_mean(f1_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f1_filt]   = Sync_mean(f1_filt_eeg, indf,sweeps_interval , Fs);
+<span class="comment">% freqz(FIR_eq.Numerator, 1)</span>
+
+<span class="comment">% f2: FIR_Least_squares_Filter:</span>
+
+FIR_L_s = FIR_Least_squares_Filter;
+f2_eeg = fliplr(filter(FIR_L_s.Numerator,1,fliplr(filter(FIR_L_s.Numerator ,1,eeg))));
+f2_filt_eeg = filtfilt(FIR_L_s.Numerator ,1,eeg);
+[~, Mean_irreg_f2] = Sync_mean(f2_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f2]   = Sync_mean(f2_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f2_filt] = Sync_mean(f2_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f2_filt]   = Sync_mean(f2_filt_eeg, indf,sweeps_interval , Fs);
+<span class="comment">% freqz(FIR_L_s.Numerator, 1)</span>
+
+<span class="comment">% f3: FIR_Window_Bartlett_Hanning_Filter:</span>
+
+FIR_Bartlett_Hanning = FIR_Window_Bartlett_Hanning_Filter;
+f3_eeg = fliplr(filter(FIR_Bartlett_Hanning,fliplr(filter(FIR_Bartlett_Hanning.Numerator,1,eeg))));
+f3_filt_eeg = filtfilt(FIR_Bartlett_Hanning.Numerator, 1, eeg);
+[~, Mean_irreg_f3] = Sync_mean(f3_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f3]   = Sync_mean(f3_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f3_filt] = Sync_mean(f3_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f3_filt]   = Sync_mean(f3_filt_eeg, indf,sweeps_interval , Fs);
+<span class="comment">% freqz(FIR_Bartlett_Hanning.Numerator, 1)</span>
+
+<span class="comment">% f4: IIR_Butterworth_Filter</span>
+
+IIR_Butter = IIR_Butterworth_Filter();
+f4_eeg = fliplr(filter(IIR_Butter,fliplr(filter(IIR_Butter,eeg))));
+f4_filt_eeg = filtfilt(IIR_Butter.sosMatrix, IIR_Butter.ScaleValues, eeg);
+[~, Mean_irreg_f4] = Sync_mean(f4_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f4]   = Sync_mean(f4_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f4_filt] = Sync_mean(f4_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f4_filt]   = Sync_mean(f4_filt_eeg, indf,sweeps_interval , Fs);
+<span class="comment">% freqz(IIR_Butter)</span>
+
+<span class="comment">% f5: IIR_Elliptic_Filter</span>
+
+IIR_Elliptic = IIR_Elliptic_Filter();
+f5_eeg = fliplr(filter(IIR_Elliptic,fliplr(filter(IIR_Elliptic,eeg))));
+f5_filt_eeg = filtfilt(IIR_Elliptic.sosMatrix,IIR_Elliptic.ScaleValues, eeg);
+[~, Mean_irreg_f5] = Sync_mean(f5_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f5]   = Sync_mean(f5_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f5_filt] = Sync_mean(f5_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f5_filt]   = Sync_mean(f5_filt_eeg, indf,sweeps_interval , Fs);
+<span class="comment">% freqz(IIR_Elliptic)</span>
+
+<span class="comment">% f6: IIR_Chebyshev_Filter</span>
+
+IIR_Chebyshev = IIR_Chebyshev_Filter();
+f6_eeg = fliplr(filter(IIR_Chebyshev,fliplr(filter(IIR_Chebyshev,eeg))));
+f6_filt_eeg = filtfilt(IIR_Chebyshev.sosMatrix, IIR_Chebyshev.ScaleValues, eeg);
+[~, Mean_irreg_f6] = Sync_mean(f6_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f6]   = Sync_mean(f6_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f6_filt] = Sync_mean(f6_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f6_filt]   = Sync_mean(f6_filt_eeg, indf,sweeps_interval , Fs);
+<span class="comment">% freqz(IIR_Chebyshev)</span>
+
+<span class="comment">% f7: High pass + Low pass butterworth</span>
+High_Butter = High_Pass_Butterworth();
+Low_Butter = Low_Pass_Butterworth();
+eeg_HL = fliplr(filter(High_Butter,fliplr(filter(High_Butter,eeg))));
+eeg_HL = fliplr(filter(Low_Butter,fliplr(filter(Low_Butter,eeg_HL))));
+[~, Mean_irreg_HL] = Sync_mean(eeg_HL, indd,sweeps_interval , Fs);
+[t, Mean_reg_HL]   = Sync_mean(eeg_HL, indf,sweeps_interval , Fs);
+
+<span class="comment">%comparing mean regular responses after &amp; befor filtering(self implemented 0 phase)</span>
+
+figure(Name=<span class="string">'Comparing mean regular responses before and after filtering(self implemented 0 phase)'</span>)
+plot(t, Mean_reg),        title(<span class="string">'mean regular responses before and after filtering'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'Time (mili seconds)'</span>),
+hold <span class="string">on</span>,     plot(t, Mean_reg_f1),       hold <span class="string">on</span>,      plot(t, Mean_reg_f2),    hold <span class="string">on</span>,     plot(t, Mean_reg_f3),
+hold <span class="string">on</span>,     plot(t, Mean_reg_f4),       hold <span class="string">on</span>,      plot(t, Mean_reg_f5),    hold <span class="string">on</span>,    plot(t, Mean_reg_f6)
+hold <span class="string">on</span>,     plot(t, Mean_reg_HL)
+legend(<span class="string">'Before filtering'</span>,<span class="string">'FIR Equiripple Filter'</span>, <span class="string">'FIR Least squares Filter'</span>, <span class="string">'FIR Bartlett Hanning'</span>, <span class="keyword">...</span>
+    <span class="string">'IIR Butterworth Filter'</span>,<span class="string">'IIR Elliptic Filter'</span>,<span class="string">'IIR Chebyshev Filter'</span>, <span class="string">'High + Low pass filter'</span>)
+
+<span class="comment">%comparing mean regular responses after &amp; befor filtering(filtfilt method)</span>
+
+figure(Name=<span class="string">'Comparing mean regular responses before and after filtering(filtfilt method)'</span>)
+plot(t, Mean_reg),        title(<span class="string">'mean regular responses before and after filtering'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'Time (mili seconds)'</span>),
+hold <span class="string">on</span>,     plot(t, Mean_reg_f1_filt),    hold <span class="string">on</span>,     plot(t, Mean_reg_f2_filt),     hold <span class="string">on</span>,     plot(t, Mean_reg_f3_filt),
+hold <span class="string">on</span>,    plot(t, Mean_reg_f5_filt)
+legend(<span class="string">'Before filtering'</span>,<span class="string">'FIR Equiripple Filter'</span>, <span class="string">'FIR Least squares Filter'</span>, <span class="string">'FIR Bartlett Hanning'</span>,<span class="string">'IIR Elliptic Filter'</span>)
+
+figure(Name=<span class="string">'Comparing mean regular responses before and after filtering(filtfilt method), IIR Butterworth'</span>)
+plot(t, Mean_reg),        title(<span class="string">'mean regular responses before and after filtering'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'Time (mili seconds)'</span>),
+hold <span class="string">on</span>,     plot(t, Mean_reg_f4_filt)
+legend(<span class="string">'Before filtering'</span>,<span class="string">'IIR Butterworth Filter'</span>)
+
+figure(Name=<span class="string">'Comparing mean regular responses before and after filtering(filtfilt method), IIR Chebyshev'</span>)
+plot(t, Mean_reg),        title(<span class="string">'mean regular responses before and after filtering'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'Time (mili seconds)'</span>),
+hold <span class="string">on</span>,     plot(t, Mean_reg_f6_filt)
+legend(<span class="string">'Before filtering'</span>,<span class="string">'IIR Chebyshev Filter'</span>)
+<span class="comment">%comparing mean irregular responses after &amp; befor filtering(self implemented 0 phase)</span>
+
+figure(Name=<span class="string">'Comparing mean irregular responses before and after filtering(self implemented 0 phase)'</span>)
+plot(t, Mean_reg),        title(<span class="string">'mean irregular responses before and after filtering'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'Time (mili seconds)'</span>),
+hold <span class="string">on</span>,     plot(t, Mean_irreg_f1),       hold <span class="string">on</span>,    plot(t, Mean_irreg_f2),     hold <span class="string">on</span>,     plot(t, Mean_irreg_f3),
+hold <span class="string">on</span>,     plot(t, Mean_irreg_f4),      hold <span class="string">on</span>,     plot(t, Mean_irreg_f5),    hold <span class="string">on</span>,     plot(t, Mean_irreg_f6)
+hold <span class="string">on</span>,     plot(t, Mean_reg_HL)
+legend(<span class="string">'Before filtering'</span>,<span class="string">'FIR Equiripple Filter'</span>, <span class="string">'FIR Least squares Filter'</span>, <span class="string">'FIR Bartlett Hanning'</span>, <span class="keyword">...</span>
+    <span class="string">'IIR Butterworth Filter'</span>,<span class="string">'IIR Elliptic Filter'</span>,<span class="string">'IIR Chebyshev Filter'</span>, <span class="string">'High + Low pass filter'</span>)
+
+<span class="comment">%comparing mean irregular responses after &amp; befor filtering(filtfilt method)</span>
+
+figure(Name=<span class="string">'Comparing mean irregular responses before and after filtering(filtfilt method)'</span>)
+plot(t, Mean_irreg),        title(<span class="string">'mean irregular responses before and after filtering'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'Time (mili seconds)'</span>),
+hold <span class="string">on</span>,     plot(t, Mean_irreg_f1_filt),     hold <span class="string">on</span>,      plot(t, Mean_irreg_f2_filt),      hold <span class="string">on</span>,    plot(t, Mean_irreg_f3_filt),
+hold <span class="string">on</span>,     plot(t, Mean_irreg_f5_filt)
+legend(<span class="string">'Before filtering'</span>,<span class="string">'FIR Equiripple Filter'</span>, <span class="string">'FIR Least squares Filter'</span>, <span class="string">'FIR Bartlett Hanning'</span>,<span class="string">'IIR Elliptic Filter'</span>)
+
+<span class="comment">% Comparing PSD of EEG before and after filtering (self implemented 0 phase filters)</span>
+
+figure(Name=<span class="string">'Comparing PSD of EEG before and after filtering(self implemented 0 phase filters)'</span>)
+h=spectrum.welch;               psd(h,eeg, <span class="string">'fs'</span>, Fs),         hold <span class="string">on</span>,
+psd(h,f1_eeg, <span class="string">'fs'</span>, Fs),     hold <span class="string">on</span>,    psd(h,f2_eeg, <span class="string">'fs'</span>, Fs),    hold <span class="string">on</span>,   psd(h,f3_eeg, <span class="string">'fs'</span>, Fs), hold <span class="string">on</span>
+psd(h,f4_eeg, <span class="string">'fs'</span>, Fs),     hold <span class="string">on</span>,    psd(h,f5_eeg, <span class="string">'fs'</span>, Fs),    hold <span class="string">on</span>,  psd(h,f6_eeg, <span class="string">'fs'</span>, Fs)
+legend(<span class="string">'Before filtering'</span>,<span class="string">'FIR Equiripple Filter'</span>, <span class="string">'FIR Least squares Filter'</span>, <span class="string">'FIR Bartlett Hanning'</span>, <span class="keyword">...</span>
+    <span class="string">'IIR Butterworth Filter'</span>,<span class="string">'IIR Elliptic Filter'</span>,<span class="string">'IIR Chebyshev Filter'</span>)
+
+<span class="comment">% Comparing PSD of EEG before and after filtering (filtfilt method)</span>
+
+figure(Name=<span class="string">'Comparing PSD of EEG before and after filtering(filtfilt method)'</span>)
+h=spectrum.welch;               psd(h,eeg, <span class="string">'fs'</span>, Fs),         hold <span class="string">on</span>,
+psd(h,f1_filt_eeg, <span class="string">'fs'</span>, Fs),     hold <span class="string">on</span>,    psd(h,f2_filt_eeg, <span class="string">'fs'</span>, Fs),    hold <span class="string">on</span>,   psd(h,f3_filt_eeg, <span class="string">'fs'</span>, Fs), hold <span class="string">on</span>
+psd(h,f4_filt_eeg, <span class="string">'fs'</span>, Fs),     hold <span class="string">on</span>,    psd(h,f5_filt_eeg, <span class="string">'fs'</span>, Fs),    hold <span class="string">on</span>,  psd(h,f6_filt_eeg, <span class="string">'fs'</span>, Fs)
+legend(<span class="string">'Before filtering'</span>,<span class="string">'FIR Equiripple Filter'</span>, <span class="string">'FIR Least squares Filter'</span>, <span class="string">'FIR Bartlett Hanning'</span>, <span class="string">'IIR Butterworth Filter'</span>,<span class="string">'IIR Elliptic Filter'</span>,<span class="string">'IIR Chebyshev Filter'</span>)
+
+<span class="comment">% Comparing estimated SNRs generated with self implemented 0 phase filters</span>
+figure(Name=<span class="string">'Comparing SNR of EEG before and after filtering(self implemented 0 phase)'</span>)
+
+sweeps_interval2 = [-15 200];  <span class="comment">% in milli seconds</span>
+n_of_sweeps = [10 50 100 200 300 350 400 420];
+
+snr   = SNR_estimate(eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr1 = SNR_estimate(f1_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr2 = SNR_estimate(f2_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr3 = SNR_estimate(f3_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr4 = SNR_estimate(f4_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr5 = SNR_estimate(f5_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr6 = SNR_estimate(f6_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr7 = SNR_estimate(eeg_HL,indf,sweeps_interval2,Fs,n_of_sweeps);
+
+plot(n_of_sweeps, snr,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),        title(<span class="string">'SNR estimation'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'number of sweeps'</span>),    ylabel(<span class="string">'Estimated SNR'</span>), grid <span class="string">on</span>
+hold <span class="string">on</span>,        plot(n_of_sweeps, snr1,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),      hold <span class="string">on</span>,      plot(n_of_sweeps, snr2,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),
+hold <span class="string">on</span>,        plot(n_of_sweeps, snr3,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),     hold <span class="string">on</span>,      plot(n_of_sweeps, snr4,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),
+hold <span class="string">on</span>,        plot(n_of_sweeps, snr5,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),     hold <span class="string">on</span>,      plot(n_of_sweeps, snr6,<span class="string">"Marker"</span>,<span class="string">"o"</span> )
+hold <span class="string">on</span>,        plot(n_of_sweeps, snr7,<span class="string">"Marker"</span>,<span class="string">"o"</span> )
+legend(<span class="string">'Before filtering'</span>,<span class="string">'FIR Equiripple Filter'</span>, <span class="string">'FIR Least squares Filter'</span>, <span class="string">'FIR Bartlett Hanning'</span>, <span class="keyword">...</span>
+    <span class="string">'IIR Butterworth Filter'</span>,<span class="string">'IIR Elliptic Filter'</span>,<span class="string">'IIR Chebyshev Filter'</span>, <span class="string">'High + Low pass filter'</span>)
+
+<span class="comment">% Comparing estimated SNRs generated with filtfilt method</span>
+figure(Name=<span class="string">'Comparing SNR of EEG before and after filtering(filtfilt method)'</span>)
+
+snr1_filt = SNR_estimate(f1_filt_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr2_filt = SNR_estimate(f2_filt_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr3_filt = SNR_estimate(f3_filt_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr5_filt = SNR_estimate(f5_filt_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+
+plot(n_of_sweeps, snr,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),        title(<span class="string">'SNR estimation'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'number of sweeps'</span>),    ylabel(<span class="string">'Estimated SNR'</span>), grid <span class="string">on</span>
+hold <span class="string">on</span>,        plot(n_of_sweeps, snr1_filt,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),      hold <span class="string">on</span>,     plot(n_of_sweeps, snr2_filt,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),
+hold <span class="string">on</span>,        plot(n_of_sweeps, snr3_filt,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),      hold <span class="string">on</span>,     plot(n_of_sweeps, snr5_filt,<span class="string">"Marker"</span>,<span class="string">"o"</span> )
+legend(<span class="string">'Before filtering'</span>,<span class="string">'FIR Equiripple Filter'</span>, <span class="string">'FIR Least squares Filter'</span>, <span class="string">'FIR Bartlett Hanning'</span>,<span class="string">'IIR Elliptic Filter'</span>)
+</pre>
+<img vspace="5" hspace="5" src="Main_05.png" alt=""> <img vspace="5" hspace="5" src="Main_06.png" alt=""> <img vspace="5" hspace="5" src="Main_07.png" alt=""> <img vspace="5" hspace="5" src="Main_08.png" alt=""> <img vspace="5" hspace="5" src="Main_09.png" alt=""> <img vspace="5" hspace="5" src="Main_10.png" alt=""> <img vspace="5" hspace="5" src="Main_11.png" alt=""> <img vspace="5" hspace="5" src="Main_12.png" alt=""> <img vspace="5" hspace="5" src="Main_13.png" alt=""> <img vspace="5" hspace="5" src="Main_14.png" alt=""> <h2 id="3">Section3: Picking the best Filter</h2>
+<pre class="codeinput">close <span class="string">all</span>
+<span class="comment">%if we consider the estimated SNR on:</span>
+<span class="comment">% best IIR filter: Window_Bartlett_Hanning_Filter</span>
+<span class="comment">% best FIR filter: Elliptic_Filter with filtfilt method</span>
+figure(Name=<span class="string">'PSD comparison'</span>)
+psd(h,eeg, <span class="string">'fs'</span>, Fs),     hold <span class="string">on</span>,    psd(h,f3_eeg, <span class="string">'fs'</span>, Fs),    hold <span class="string">on</span>,   psd(h,f5_filt_eeg, <span class="string">'fs'</span>, Fs)
+legend(<span class="string">'Before filtering'</span>, <span class="string">'FIR Bartlett Hanning'</span>,<span class="string">'IIR Elliptic Filter'</span>)
+
+figure(Name=<span class="string">'Mean regular response comparison'</span>)
+plot(t, Mean_reg),       hold <span class="string">on</span>,      plot(t, Mean_reg_f3),    hold <span class="string">on</span>,     plot(t, Mean_reg_f5_filt), xlabel(<span class="string">'Time (mili seconds)'</span>),
+title(<span class="string">'Mean regular response'</span>),   legend(<span class="string">'Before filtering'</span>, <span class="string">'FIR Bartlett Hanning'</span>,<span class="string">'IIR Elliptic Filter'</span>)
+
+<span class="comment">%however if we consider the estimated SNR and the frequency response of filter as well,:</span>
+<span class="comment">%best filter: IIR_Butterworth_Filter</span>
+</pre>
+<img vspace="5" hspace="5" src="Main_15.png" alt=""> <img vspace="5" hspace="5" src="Main_16.png" alt=""> <h2 id="4">Section4: Comparing IIR_Butterworth_Filter with Ideal 1to20 Hz filter!</h2>
+<pre class="codeinput">close <span class="string">all</span>
+x = fft(eeg);
+x(1:1*2*Fs)=0;
+x(20*2*Fs:length(x))=0;
+ideal_filtered_eeg = ifft(x);
+[t, Mean_reg_ideal] = Sync_mean(real(ideal_filtered_eeg), indf,sweeps_interval , Fs);
+
+figure(Name=<span class="string">'SNR comparison (ideal 1to20Hz and butterworth'</span>)
+
+Ideal_SNR = SNR_estimate(ideal_filtered_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+plot(n_of_sweeps, snr,<span class="string">"Marker"</span>,<span class="string">"o"</span> ),        title(<span class="string">'SNR estimation'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'number of sweeps'</span>),    ylabel(<span class="string">'Estimated SNR'</span>), grid <span class="string">on</span>
+hold <span class="string">on</span>,    plot(n_of_sweeps, Ideal_SNR,<span class="string">"Marker"</span>,<span class="string">"o"</span> ), hold <span class="string">on</span> ,      plot(n_of_sweeps, snr4,<span class="string">"Marker"</span>,<span class="string">"o"</span> )
+legend(<span class="string">'Before filtering'</span>, <span class="string">'Ideal 1to20'</span>,<span class="string">'IIR Butterworth Filter'</span>)
+
+figure(Name=<span class="string">'Comparing mean regular responses before and after filtering(ideal 1to20Hz and butterworth)'</span>)
+plot(t, Mean_reg),        title(<span class="string">'mean regular responses before and after filtering'</span>, <span class="string">'FontSize'</span>,13,<span class="string">'Color'</span>,<span class="string">'red'</span>),          xlabel(<span class="string">'Time (mili seconds)'</span>),
+hold <span class="string">on</span>,     plot(t, Mean_reg_f4),    hold <span class="string">on</span>,     plot(t, Mean_reg_ideal)
+legend(<span class="string">'Before filtering'</span>, <span class="string">'IIR Butterworth Filter'</span>, <span class="string">'Ideal 1to20'</span>)
+</pre>
+<img vspace="5" hspace="5" src="Main_17.png" alt=""> <img vspace="5" hspace="5" src="Main_18.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%%      Section1: Part A & B  (without any filtering)
+clc
+clear
+close all
+
+data = load ('ex2data.mat');
+eeg = transpose(data.eeg);
+indd = transpose(data.indd);
+indf = transpose(data.indf);
+
+Fs = 250;
+
+% number of regular stimuli = 420             &             number of irregular stimuli = 74
+
+% Part A
+
+sweeps_interval1 = [-50 500];  %in milli seconds
+[t, Mean_irreg] = Sync_mean(eeg, indd,sweeps_interval1 , Fs);
+figure(Name='Averaged irregular response')
+plot(t,Mean_irreg),        title('Averaged irregular response, number of sweeps:', num2str(length(indd)),'FontSize',13,'Color','red'),          xlabel('time (milli seconds)');
+
+[t, Mean_reg] = Sync_mean(eeg, indf,sweeps_interval1 , Fs);
+figure(Name='Averaged regular response')
+plot(t,Mean_reg),          title('Averaged regular response, number of sweeps:', num2str(length(indf)),'FontSize',13,'Color','red'),          xlabel('time (milli seconds)');
+
+% Part B.1
+
+[t1, Mean_reg_even] = Sync_mean(eeg, indf,sweeps_interval1 , Fs, 2);
+[t2, Mean_reg_odd] = Sync_mean(eeg, indf,sweeps_interval1 , Fs, 1);
+
+figure(Name='Average of even and odd sweeps of regular response')
+subplot(311),   plot(t1, Mean_reg_even),        title('Averaged even regular response', 'FontSize',13,'Color','red'),          xlabel('time (milli seconds)');
+subplot(312),   plot(t2, Mean_reg_odd),          title('Averaged odd regular response', 'FontSize',13,'Color','red'),          xlabel('time (milli seconds)');
+subplot(313),   plot(t, Mean_reg_even-Mean_reg_odd),          title('Diff of odd and even' ,'FontSize',13,'Color','red'),          xlabel('time (milli seconds)');
+
+% Part B.2
+
+sweeps_interval2 = [-15 200];  % in milli seconds
+n_of_sweeps = [10 50 100 200 300 400 length(indf)];
+snr_estimate = SNR_estimate(eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+figure(Name='SNR estimation with different numbers of sweeps')
+plot(n_of_sweeps, snr_estimate,"Marker","o" ),        title('SNR estimation', 'FontSize',13,'Color','red'),          xlabel('number of sweeps'),    ylabel('Estimated SNR'), grid on 
+
+
+%%      Section2: Comparing different filters with each other
+
+
+close all 
+clear 
+clc
+data = load ('ex2data.mat');
+eeg = transpose(data.eeg);
+indd = transpose(data.indd);
+indf = transpose(data.indf);
+Fs = 250;
+sweeps_interval = [-50 500];  %in milli seconds
+
+[~, Mean_irreg] = Sync_mean(eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg]   = Sync_mean(eeg, indf,sweeps_interval , Fs);
+
+% f1: FIR_Equiripple_Filter:
+
+FIR_eq = FIR_Equiripple_Filter;
+f1_eeg = fliplr(filter(FIR_eq.Numerator,1,fliplr(filter(FIR_eq.Numerator ,1,eeg))));
+f1_filt_eeg = filtfilt(FIR_eq.Numerator ,1,eeg);
+[~, Mean_irreg_f1] = Sync_mean(f1_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f1]   = Sync_mean(f1_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f1_filt] = Sync_mean(f1_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f1_filt]   = Sync_mean(f1_filt_eeg, indf,sweeps_interval , Fs);
+% freqz(FIR_eq.Numerator, 1)
+
+% f2: FIR_Least_squares_Filter:
+
+FIR_L_s = FIR_Least_squares_Filter;
+f2_eeg = fliplr(filter(FIR_L_s.Numerator,1,fliplr(filter(FIR_L_s.Numerator ,1,eeg))));     
+f2_filt_eeg = filtfilt(FIR_L_s.Numerator ,1,eeg);     
+[~, Mean_irreg_f2] = Sync_mean(f2_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f2]   = Sync_mean(f2_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f2_filt] = Sync_mean(f2_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f2_filt]   = Sync_mean(f2_filt_eeg, indf,sweeps_interval , Fs);
+% freqz(FIR_L_s.Numerator, 1)
+
+% f3: FIR_Window_Bartlett_Hanning_Filter:
+
+FIR_Bartlett_Hanning = FIR_Window_Bartlett_Hanning_Filter;
+f3_eeg = fliplr(filter(FIR_Bartlett_Hanning,fliplr(filter(FIR_Bartlett_Hanning.Numerator,1,eeg)))); 
+f3_filt_eeg = filtfilt(FIR_Bartlett_Hanning.Numerator, 1, eeg);     
+[~, Mean_irreg_f3] = Sync_mean(f3_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f3]   = Sync_mean(f3_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f3_filt] = Sync_mean(f3_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f3_filt]   = Sync_mean(f3_filt_eeg, indf,sweeps_interval , Fs);
+% freqz(FIR_Bartlett_Hanning.Numerator, 1)
+
+% f4: IIR_Butterworth_Filter
+
+IIR_Butter = IIR_Butterworth_Filter();
+f4_eeg = fliplr(filter(IIR_Butter,fliplr(filter(IIR_Butter,eeg)))); 
+f4_filt_eeg = filtfilt(IIR_Butter.sosMatrix, IIR_Butter.ScaleValues, eeg);     
+[~, Mean_irreg_f4] = Sync_mean(f4_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f4]   = Sync_mean(f4_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f4_filt] = Sync_mean(f4_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f4_filt]   = Sync_mean(f4_filt_eeg, indf,sweeps_interval , Fs);
+% freqz(IIR_Butter)
+
+% f5: IIR_Elliptic_Filter
+
+IIR_Elliptic = IIR_Elliptic_Filter();
+f5_eeg = fliplr(filter(IIR_Elliptic,fliplr(filter(IIR_Elliptic,eeg))));     
+f5_filt_eeg = filtfilt(IIR_Elliptic.sosMatrix,IIR_Elliptic.ScaleValues, eeg);   
+[~, Mean_irreg_f5] = Sync_mean(f5_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f5]   = Sync_mean(f5_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f5_filt] = Sync_mean(f5_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f5_filt]   = Sync_mean(f5_filt_eeg, indf,sweeps_interval , Fs);
+% freqz(IIR_Elliptic)
+
+% f6: IIR_Chebyshev_Filter
+
+IIR_Chebyshev = IIR_Chebyshev_Filter();
+f6_eeg = fliplr(filter(IIR_Chebyshev,fliplr(filter(IIR_Chebyshev,eeg))));  
+f6_filt_eeg = filtfilt(IIR_Chebyshev.sosMatrix, IIR_Chebyshev.ScaleValues, eeg);   
+[~, Mean_irreg_f6] = Sync_mean(f6_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f6]   = Sync_mean(f6_eeg, indf,sweeps_interval , Fs);
+[~, Mean_irreg_f6_filt] = Sync_mean(f6_filt_eeg, indd,sweeps_interval , Fs);
+[~, Mean_reg_f6_filt]   = Sync_mean(f6_filt_eeg, indf,sweeps_interval , Fs);
+% freqz(IIR_Chebyshev)
+
+% f7: High pass + Low pass butterworth
+High_Butter = High_Pass_Butterworth();
+Low_Butter = Low_Pass_Butterworth();
+eeg_HL = fliplr(filter(High_Butter,fliplr(filter(High_Butter,eeg))));     
+eeg_HL = fliplr(filter(Low_Butter,fliplr(filter(Low_Butter,eeg_HL))));  
+[~, Mean_irreg_HL] = Sync_mean(eeg_HL, indd,sweeps_interval , Fs);
+[t, Mean_reg_HL]   = Sync_mean(eeg_HL, indf,sweeps_interval , Fs);
+
+%comparing mean regular responses after & befor filtering(self implemented 0 phase)
+
+figure(Name='Comparing mean regular responses before and after filtering(self implemented 0 phase)')
+plot(t, Mean_reg),        title('mean regular responses before and after filtering', 'FontSize',13,'Color','red'),          xlabel('Time (mili seconds)'),    
+hold on,     plot(t, Mean_reg_f1),       hold on,      plot(t, Mean_reg_f2),    hold on,     plot(t, Mean_reg_f3),
+hold on,     plot(t, Mean_reg_f4),       hold on,      plot(t, Mean_reg_f5),    hold on,    plot(t, Mean_reg_f6)
+hold on,     plot(t, Mean_reg_HL)
+legend('Before filtering','FIR Equiripple Filter', 'FIR Least squares Filter', 'FIR Bartlett Hanning', ...
+    'IIR Butterworth Filter','IIR Elliptic Filter','IIR Chebyshev Filter', 'High + Low pass filter')
+
+%comparing mean regular responses after & befor filtering(filtfilt method)
+
+figure(Name='Comparing mean regular responses before and after filtering(filtfilt method)')
+plot(t, Mean_reg),        title('mean regular responses before and after filtering', 'FontSize',13,'Color','red'),          xlabel('Time (mili seconds)'),    
+hold on,     plot(t, Mean_reg_f1_filt),    hold on,     plot(t, Mean_reg_f2_filt),     hold on,     plot(t, Mean_reg_f3_filt),
+hold on,    plot(t, Mean_reg_f5_filt)
+legend('Before filtering','FIR Equiripple Filter', 'FIR Least squares Filter', 'FIR Bartlett Hanning','IIR Elliptic Filter')
+
+figure(Name='Comparing mean regular responses before and after filtering(filtfilt method), IIR Butterworth')
+plot(t, Mean_reg),        title('mean regular responses before and after filtering', 'FontSize',13,'Color','red'),          xlabel('Time (mili seconds)'),    
+hold on,     plot(t, Mean_reg_f4_filt)
+legend('Before filtering','IIR Butterworth Filter')
+
+figure(Name='Comparing mean regular responses before and after filtering(filtfilt method), IIR Chebyshev')
+plot(t, Mean_reg),        title('mean regular responses before and after filtering', 'FontSize',13,'Color','red'),          xlabel('Time (mili seconds)'),    
+hold on,     plot(t, Mean_reg_f6_filt)
+legend('Before filtering','IIR Chebyshev Filter')
+%comparing mean irregular responses after & befor filtering(self implemented 0 phase)
+
+figure(Name='Comparing mean irregular responses before and after filtering(self implemented 0 phase)')
+plot(t, Mean_reg),        title('mean irregular responses before and after filtering', 'FontSize',13,'Color','red'),          xlabel('Time (mili seconds)'),    
+hold on,     plot(t, Mean_irreg_f1),       hold on,    plot(t, Mean_irreg_f2),     hold on,     plot(t, Mean_irreg_f3),
+hold on,     plot(t, Mean_irreg_f4),      hold on,     plot(t, Mean_irreg_f5),    hold on,     plot(t, Mean_irreg_f6)
+hold on,     plot(t, Mean_reg_HL)
+legend('Before filtering','FIR Equiripple Filter', 'FIR Least squares Filter', 'FIR Bartlett Hanning', ...
+    'IIR Butterworth Filter','IIR Elliptic Filter','IIR Chebyshev Filter', 'High + Low pass filter')
+
+%comparing mean irregular responses after & befor filtering(filtfilt method)
+
+figure(Name='Comparing mean irregular responses before and after filtering(filtfilt method)')
+plot(t, Mean_irreg),        title('mean irregular responses before and after filtering', 'FontSize',13,'Color','red'),          xlabel('Time (mili seconds)'),    
+hold on,     plot(t, Mean_irreg_f1_filt),     hold on,      plot(t, Mean_irreg_f2_filt),      hold on,    plot(t, Mean_irreg_f3_filt),
+hold on,     plot(t, Mean_irreg_f5_filt)
+legend('Before filtering','FIR Equiripple Filter', 'FIR Least squares Filter', 'FIR Bartlett Hanning','IIR Elliptic Filter')
+
+% Comparing PSD of EEG before and after filtering (self implemented 0 phase filters)
+
+figure(Name='Comparing PSD of EEG before and after filtering(self implemented 0 phase filters)')
+h=spectrum.welch;               psd(h,eeg, 'fs', Fs),         hold on,    
+psd(h,f1_eeg, 'fs', Fs),     hold on,    psd(h,f2_eeg, 'fs', Fs),    hold on,   psd(h,f3_eeg, 'fs', Fs), hold on
+psd(h,f4_eeg, 'fs', Fs),     hold on,    psd(h,f5_eeg, 'fs', Fs),    hold on,  psd(h,f6_eeg, 'fs', Fs)
+legend('Before filtering','FIR Equiripple Filter', 'FIR Least squares Filter', 'FIR Bartlett Hanning', ...
+    'IIR Butterworth Filter','IIR Elliptic Filter','IIR Chebyshev Filter')
+
+% Comparing PSD of EEG before and after filtering (filtfilt method)
+
+figure(Name='Comparing PSD of EEG before and after filtering(filtfilt method)')
+h=spectrum.welch;               psd(h,eeg, 'fs', Fs),         hold on,    
+psd(h,f1_filt_eeg, 'fs', Fs),     hold on,    psd(h,f2_filt_eeg, 'fs', Fs),    hold on,   psd(h,f3_filt_eeg, 'fs', Fs), hold on
+psd(h,f4_filt_eeg, 'fs', Fs),     hold on,    psd(h,f5_filt_eeg, 'fs', Fs),    hold on,  psd(h,f6_filt_eeg, 'fs', Fs)
+legend('Before filtering','FIR Equiripple Filter', 'FIR Least squares Filter', 'FIR Bartlett Hanning', 'IIR Butterworth Filter','IIR Elliptic Filter','IIR Chebyshev Filter')
+
+% Comparing estimated SNRs generated with self implemented 0 phase filters 
+figure(Name='Comparing SNR of EEG before and after filtering(self implemented 0 phase)')
+
+sweeps_interval2 = [-15 200];  % in milli seconds
+n_of_sweeps = [10 50 100 200 300 350 400 420];
+
+snr   = SNR_estimate(eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr1 = SNR_estimate(f1_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr2 = SNR_estimate(f2_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr3 = SNR_estimate(f3_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr4 = SNR_estimate(f4_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr5 = SNR_estimate(f5_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr6 = SNR_estimate(f6_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr7 = SNR_estimate(eeg_HL,indf,sweeps_interval2,Fs,n_of_sweeps);
+
+plot(n_of_sweeps, snr,"Marker","o" ),        title('SNR estimation', 'FontSize',13,'Color','red'),          xlabel('number of sweeps'),    ylabel('Estimated SNR'), grid on 
+hold on,        plot(n_of_sweeps, snr1,"Marker","o" ),      hold on,      plot(n_of_sweeps, snr2,"Marker","o" ), 
+hold on,        plot(n_of_sweeps, snr3,"Marker","o" ),     hold on,      plot(n_of_sweeps, snr4,"Marker","o" ), 
+hold on,        plot(n_of_sweeps, snr5,"Marker","o" ),     hold on,      plot(n_of_sweeps, snr6,"Marker","o" )
+hold on,        plot(n_of_sweeps, snr7,"Marker","o" )
+legend('Before filtering','FIR Equiripple Filter', 'FIR Least squares Filter', 'FIR Bartlett Hanning', ...
+    'IIR Butterworth Filter','IIR Elliptic Filter','IIR Chebyshev Filter', 'High + Low pass filter')
+
+% Comparing estimated SNRs generated with filtfilt method 
+figure(Name='Comparing SNR of EEG before and after filtering(filtfilt method)')
+
+snr1_filt = SNR_estimate(f1_filt_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr2_filt = SNR_estimate(f2_filt_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr3_filt = SNR_estimate(f3_filt_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+snr5_filt = SNR_estimate(f5_filt_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+
+plot(n_of_sweeps, snr,"Marker","o" ),        title('SNR estimation', 'FontSize',13,'Color','red'),          xlabel('number of sweeps'),    ylabel('Estimated SNR'), grid on 
+hold on,        plot(n_of_sweeps, snr1_filt,"Marker","o" ),      hold on,     plot(n_of_sweeps, snr2_filt,"Marker","o" ), 
+hold on,        plot(n_of_sweeps, snr3_filt,"Marker","o" ),      hold on,     plot(n_of_sweeps, snr5_filt,"Marker","o" )
+legend('Before filtering','FIR Equiripple Filter', 'FIR Least squares Filter', 'FIR Bartlett Hanning','IIR Elliptic Filter')
+
+%%      Section3:  Picking the best Filter
+close all
+%if we consider the estimated SNR on:
+% best IIR filter: Window_Bartlett_Hanning_Filter
+% best FIR filter: Elliptic_Filter with filtfilt method
+figure(Name='PSD comparison')
+psd(h,eeg, 'fs', Fs),     hold on,    psd(h,f3_eeg, 'fs', Fs),    hold on,   psd(h,f5_filt_eeg, 'fs', Fs)
+legend('Before filtering', 'FIR Bartlett Hanning','IIR Elliptic Filter')
+
+figure(Name='Mean regular response comparison')     
+plot(t, Mean_reg),       hold on,      plot(t, Mean_reg_f3),    hold on,     plot(t, Mean_reg_f5_filt), xlabel('Time (mili seconds)'), 
+title('Mean regular response'),   legend('Before filtering', 'FIR Bartlett Hanning','IIR Elliptic Filter')
+
+%however if we consider the estimated SNR and the frequency response of filter as well,:
+%best filter: IIR_Butterworth_Filter
+
+
+%%      Section4:  Comparing IIR_Butterworth_Filter with Ideal 1to20 Hz filter!
+close all
+x = fft(eeg);
+x(1:1*2*Fs)=0;
+x(20*2*Fs:length(x))=0;
+ideal_filtered_eeg = ifft(x);
+[t, Mean_reg_ideal] = Sync_mean(real(ideal_filtered_eeg), indf,sweeps_interval , Fs);
+
+figure(Name='SNR comparison (ideal 1to20Hz and butterworth')     
+
+Ideal_SNR = SNR_estimate(ideal_filtered_eeg,indf,sweeps_interval2,Fs,n_of_sweeps);
+plot(n_of_sweeps, snr,"Marker","o" ),        title('SNR estimation', 'FontSize',13,'Color','red'),          xlabel('number of sweeps'),    ylabel('Estimated SNR'), grid on 
+hold on,    plot(n_of_sweeps, Ideal_SNR,"Marker","o" ), hold on ,      plot(n_of_sweeps, snr4,"Marker","o" )
+legend('Before filtering', 'Ideal 1to20','IIR Butterworth Filter')
+
+figure(Name='Comparing mean regular responses before and after filtering(ideal 1to20Hz and butterworth)')
+plot(t, Mean_reg),        title('mean regular responses before and after filtering', 'FontSize',13,'Color','red'),          xlabel('Time (mili seconds)'),    
+hold on,     plot(t, Mean_reg_f4),    hold on,     plot(t, Mean_reg_ideal)
+legend('Before filtering', 'IIR Butterworth Filter', 'Ideal 1to20')
+
+
+
+##### SOURCE END #####
+-->
+</body>
+</html>
